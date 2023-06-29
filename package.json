@@ -1,0 +1,36 @@
+{
+   "name": "tena",
+   "version": "1.0.0",
+   "description": "tena app is healthcare website where patients can make appointment online with doctors",
+   "main": "index.js",
+   "devDependencies": {
+      "nodemon": "^2.0.22"
+   },
+   "scripts": {
+      "start": "node server.js",
+      "server": "nodemon server.js"
+   },
+   "dependencies": {
+      "bcryptjs": "^2.4.3",
+      "cookie-parser": "^1.4.6",
+      "dayjs": "^1.11.8",
+      "dotenv": "^16.0.3",
+      "express": "^4.18.2",
+      "express-async-errors": "^3.1.1",
+      "jsonwebtoken": "^9.0.0",
+      "mongoose": "^7.2.1"
+   },
+   "repository": {
+      "type": "git",
+      "url": "git+https://github.com/Haileiyesus-29/Tena.git"
+   },
+   "keywords": [
+      "healthcare"
+   ],
+   "author": "DevSquad group",
+   "license": "ISC",
+   "bugs": {
+      "url": "https://github.com/Haileiyesus-29/Tena/issues"
+   },
+   "homepage": "https://github.com/Haileiyesus-29/Tena#readme"
+}
