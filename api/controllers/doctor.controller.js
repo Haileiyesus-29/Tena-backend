@@ -28,14 +28,9 @@ async function getAllDoctors(req, res, next) {
 // Get a single doctor by ID
 async function getDoctorById(req, res, next) {
    const { id } = req.params
-   try {
-      const doctor = await Doctor.findById(id).select('-password')
-      if (!doctor)
-         return next({ status: 404, errors: ['account does not exist'] })
-      res.status(200).json(doctor)
-   } catch {
-      return next({ status: 400, errors: ['invalid id'] })
-   }
+   const doctor = await Doctor.findById(id).select('-password')
+   if (!doctor) return next({ status: 404, errors: ['account does not exist'] })
+   res.status(200).json(doctor)
 }
 
 // Create a new doctor
@@ -93,7 +88,9 @@ async function updateDoctor(req, res, next) {
    const errors = [...nameErrors, ...passwordErrors]
    if (errors.length > 0) return next({ errors, status: 400 })
 
-   const doctor = await Doctor.findByIdAndUpdate(req.userId, update)
+   const doctor = await Doctor.findByIdAndUpdate(req.userId, update, {
+      new: true,
+   })
    if (!doctor) return next({ status: 404, errors: ['account does not exist'] })
    doctor.password = undefined
    doctor._doc.accType = 'doctor'

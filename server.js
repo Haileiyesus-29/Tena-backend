@@ -3,6 +3,7 @@ require('express-async-errors')
 const express = require('express')
 const cookieParser = require('cookie-parser')
 const cors = require('cors')
+global.__basedir = __dirname
 
 const connectDB = require('./config/db')
 const {
@@ -39,6 +40,7 @@ const appointmentRoutes = require('./api/routes/appointment.route')
 const paymentRoutes = require('./api/routes/payment.route')
 const messageRoutes = require('./api/routes/message.route')
 const loginRoute = require('./api/routes/login.route')
+const profileRoute = require('./api/routes/profile.route')
 
 app.use('/api/users', userRoutes)
 app.use('/api/hospitals', hospitalRoutes)
@@ -46,6 +48,7 @@ app.use('/api/doctors', doctorRoutes)
 app.use('/api/appointments', appointmentRoutes)
 app.use('/api/payments', paymentRoutes)
 app.use('/api/messages', messageRoutes)
+app.use('/api/profile', profileRoute)
 app.use('/api/login', loginRoute)
 app.get('/api/logout', (req, res) => {
    res.cookie('jwt', '', {

@@ -49,7 +49,8 @@ async function getUser(req, res, next) {
    const userId = req.params.userId
    const user = await User.findById(userId).select('email name image')
 
-   if (!user) return next({ status: 404, errors: ['user does not exist'] })
+   if (!user) return next({ status: 404, errors: ['account does not exist'] })
+   user._doc.accType = 'user'
    res.status(200).json(user)
 }
 
@@ -73,7 +74,7 @@ async function updateUser(req, res, next) {
    if (errors.length > 0) return next({ errors, status: 400 })
 
    if (req.file) {
-      update.image = req.file.filename
+      update.image = req?.file?.filename
    }
 
    const updatedUser = await User.findByIdAndUpdate(req.userId, update, {

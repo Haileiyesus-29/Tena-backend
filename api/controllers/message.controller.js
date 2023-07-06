@@ -1,5 +1,6 @@
 const Message = require('../models/message.model')
 const User = require('../models/user.model')
+const Doctor = require('../models/doctor.model')
 
 const getAllMessages = async (req, res, next) => {
    const skip = +req.query?.skip || 0
@@ -13,14 +14,14 @@ const getAllMessages = async (req, res, next) => {
          ? message.receiver.toString()
          : message.sender.toString()
    )
-
-   const response = await User.find({
-      _id: { $in: [...new Set(accounts)] },
-   })
-      .select('-password')
-      .skip(skip)
-      .limit(limit)
-
+   let response
+   req.accType === 'doctor'
+      ? (response = await User.find({
+           _id: { $in: [...new Set(accounts)] },
+        }).select('-password'))
+      : (response = await Doctor.find({
+           _id: { $in: [...new Set(accounts)] },
+        }).select('-password'))
    res.status(200).json(response)
 }
 
@@ -46,7 +47,13 @@ const getMessageThread = async (req, res, next) => {
 
 // POST a new message
 const createMessage = async (req, res, next) => {
-   const receiver = await User.findById(req.params.receiverId)
+   const requests = [
+      User.findById(req.params.receiverId),
+      Doctor.findById(req.params.receiverId),
+   ]
+
+   const data = await Promise.all(requests)
+   const receiver = data[0]?._id || data[1]?._id
    if (!receiver)
       return next({ status: 404, errors: ['message receiver not found'] })
    const media = req.file && req.file.filename

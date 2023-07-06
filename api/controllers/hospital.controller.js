@@ -26,7 +26,7 @@ async function getHospitalById(req, res, next) {
 
 // Create a new hospital
 async function createHospital(req, res, next) {
-   const { name, email, address, contact, password } = req.body
+   const { name, email, address, contact, password, description } = req.body
    const image = req.file && req.file.filename
    const errors = []
    if (!address) errors.push('address is required')
@@ -44,6 +44,7 @@ async function createHospital(req, res, next) {
       contact,
       password: hashedPassword,
       image,
+      description,
    })
 
    const createdHospital = await hospital.save()
@@ -65,9 +66,9 @@ async function createHospital(req, res, next) {
 
 // Update a hospital by ID
 async function updateHospital(req, res, next) {
-   const { name, password, address, contact } = req.body
+   const { name, password, address, contact, description } = req.body
    const image = req.file && req.file.filename
-   const update = { image }
+   const update = { image, description }
    let nameErrors = []
    let passwordErrors = []
 
@@ -79,14 +80,15 @@ async function updateHospital(req, res, next) {
       nameErrors = nameValidator(name)
       update.name = name
    }
-   if (name) update.name = name
    if (address) update.address = address
    if (contact) update.contact = contact
 
    const errors = [...nameErrors, ...passwordErrors]
    if (errors.length > 0) return next({ errors, status: 400 })
 
-   const hospital = await Hospital.findByIdAndUpdate(req.userId, update)
+   const hospital = await Hospital.findByIdAndUpdate(req.userId, update, {
+      new: true,
+   })
    if (!hospital) return next({ status: 500 })
    hospital.password = undefined
    hospital._doc.accType = 'hospital'
